@@ -1,13 +1,12 @@
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("AstaHub", "DarkTheme")
+local Window = Library.CreateLib("Asta Hub", "DarkTheme")
 local Tab = Window:NewTab("Tab")
-local Section = Tab:NewSection("Asta Hub")
-Section:NewButton("Farm", "local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-local tweenService = game:GetService("TweenService")", function()
+local Section = Tab:NewSection("Farm")
+Section:NewButton("auto level farm", "ButtonInfo", function()
     print("Clicked")
 end)
+Section:NewLabel("LabelText")
+
 
 
 
