@@ -1,0 +1,7 @@
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("script", "DarkTheme")
+local Tab = Window:NewTab("Tab")
+Section:NewLabel("farm")
+Section:NewButton("Auto farm", "ButtonInfo", function()
+    print("Clicked")
+end)
