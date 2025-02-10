@@ -2,7 +2,10 @@ local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHept
 local Window = Library.CreateLib("AstaHub", "DarkTheme")
 local Tab = Window:NewTab("Tab")
 local Section = Tab:NewSection("Asta Hub")
-Section:NewButton("Farm", "ButtonInfo", function()
+Section:NewButton("Farm", "local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+local tweenService = game:GetService("TweenService")", function()
     print("Clicked")
 end)
 
