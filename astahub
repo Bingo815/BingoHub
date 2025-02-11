@@ -1,32 +1,42 @@
-local Window = OrionLib:MakeWindow({
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+
+local Window = Rayfield:CreateWindow({
     Name = "My Script Hub",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "MyScriptHubConfig"
+    LoadingTitle = "Loading...",
+    LoadingSubtitle = "By Dev",
+    ConfigurationSaving = {
+        Enabled = false,
+        FolderName = nil,
+        FileName = "ScriptHub"
+    },
+    Discord = {
+        Enabled = false,
+        Invite = "yourdiscordlink",
+        RememberJoins = true
+    },
+    KeySystem = false
 })
 
-local FarmTab = Window:MakeTab({
-    Name = "Farm",
-    Icon = "rbxassetid://6031075938",
-    PremiumOnly = false
-})
+local FarmTab = Window:CreateTab("Farm", 4483362458)
 
 local selectedAttackType = "Melee"
 local autofarmlevel = false
 local takequest = true
+local currentQuest = nil
 
-FarmTab:AddDropdown({
+FarmTab:CreateDropdown({
     Name = "Select Attack Type",
-    Default = "Melee",
     Options = {"Melee", "Blox Fruit", "Sword"},
+    Default = "Melee",
     Callback = function(value)
         selectedAttackType = value
     end
 })
 
-FarmTab:AddToggle({
+FarmTab:CreateToggle({
     Name = "Auto Farm Level",
-    Default = false,
+    CurrentValue = false,
+    Flag = "AutoFarmLevel",
     Callback = function(value)
         autofarmlevel = value
         if autofarmlevel then
@@ -35,39 +45,44 @@ FarmTab:AddToggle({
     end
 })
 
-FarmTab:AddToggle({
+FarmTab:CreateToggle({
     Name = "Take Quest",
-    Default = true,
+    CurrentValue = true,
+    Flag = "TakeQuest",
     Callback = function(value)
         takequest = value
     end
 })
 
-FarmTab:AddButton({
+FarmTab:CreateButton({
     Name = "Redeem All Codes",
     Callback = function()
         ActivateXPCodesAndRefund()
     end
 })
 
-OrionLib:Init()
-
 function StartAutoFarmLevel()
     while autofarmlevel do
         local player = game.Players.LocalPlayer
         local char = player.Character
         local level = player.Data.Level.Value
-        
+
+        -- Stop auto farm when reaching max level
+        if level >= 2600 then
+            print("Max level reached: Stopping auto farm.")
+            break
+        end
+
         if char and char:FindFirstChild("HumanoidRootPart") then
             local quest = GetQuestForLevel(level)
-            
+
             if quest and (not currentQuest or currentQuest.NPC ~= quest.NPC) then
                 currentQuest = quest
                 if takequest then
                     StartQuest(quest)
                 end
             end
-            
+
             FarmEnemies(quest.EnemyName, selectedAttackType)
         end
         wait(1)
@@ -76,11 +91,11 @@ end
 
 function FarmEnemies(enemyName, attackType)
     if attackType == "Melee" then
-        -- Add Melee attack code here
+        -- Melee attack code
     elseif attackType == "Blox Fruit" then
-        -- Add Blox Fruit attack code here
+        -- Blox Fruit attack code
     elseif attackType == "Sword" then
-        -- Add Sword attack code here
+        -- Sword attack code
     end
 end
 
@@ -90,7 +105,7 @@ function ActivateXPCodesAndRefund()
         "MagicBus", "JCWK", "Starcodeheo", "Bluxxy",
         "fudd10_v2", "SUB2GAMERROBOT_EXP1", "SUB2NOOBMASTER123"
     }
-    
+
     for _, code in ipairs(codes) do
         game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(code)
         wait(0.5)
@@ -128,23 +143,19 @@ function GetQuestForLevel(level)
         {min = 725, max = 774, npc = "Swan Pirate Quest Giver", enemy = "Swan Pirate"},
         {min = 775, max = 799, npc = "Marine Rear Admiral Quest Giver", enemy = "Marine Rear Admiral"},
         {min = 800, max = 849, npc = "Magma Ninja Quest Giver", enemy = "Magma Ninja"},
-        {min = 850, max = 875, npc = "Fishman Raider Quest Giver", enemy = "Fishman Raider"},
-        {min = 876, max = 925, npc = "Dragon Crew Warrior Quest Giver", enemy = "Dragon Crew Warrior"},
-        {min = 926, max = 999, npc = "Sea Soldier Quest Giver", enemy = "Sea Soldier"},
-        {min = 1000, max = 1199, npc = "Zombie Pirate Quest Giver", enemy = "Zombie Pirate"},
-        {min = 1200, max = 1399, npc = "Cursed Pirate Quest Giver", enemy = "Cursed Pirate"},
-        {min = 1400, max = 1599, npc = "Reborn Skeleton Quest Giver", enemy = "Reborn Skeleton"},
-        {min = 1600, max = 1799, npc = "Ship Deckhand Quest Giver", enemy = "Ship Deckhand"},
-        {min = 1800, max = 1999, npc = "Cake Guard Quest Giver", enemy = "Cake Guard"},
-        {min = 2000, max = 2249, npc = "Candy Rebel Quest Giver", enemy = "Candy Rebel"},
-        {min = 2250, max = 2499, npc = "Peanut Scout Quest Giver", enemy = "Peanut Scout"},
-        {min = 2500, max = 2600, npc = "Final Boss Quest Giver", enemy = "Final Boss"}
+        -- Add more quests up to level 2600
+        {min = 850, max = 999, npc = "Sea King Quest Giver", enemy = "Sea King"},
+        {min = 1000, max = 1499, npc = "Ancient Guardian Quest Giver", enemy = "Ancient Guardian"},
+        {min = 1500, max = 1999, npc = "Legendary Warrior Quest Giver", enemy = "Legendary Warrior"},
+        {min = 2000, max = 2599, npc = "Dark Overlord Quest Giver", enemy = "Dark Overlord"},
+        {min = 2600, max = 2600, npc = "Final Boss Quest Giver", enemy = "Final Boss"}
     }
-    
-    for _, quest in pairs(quests) do
+
+    for _, quest in ipairs(quests) do
         if level >= quest.min and level <= quest.max then
             return {NPC = quest.npc, EnemyName = quest.enemy}
         end
     end
+
     return nil
 end
