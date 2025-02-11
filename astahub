@@ -1,3 +1,4 @@
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source", true))()
 local FarmTab = OrionLib:MakeTab({
     Name = "Farm",
     Icon = "rbxassetid://6031075938",
