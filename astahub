@@ -60,9 +60,44 @@ end
 
 function GetQuestForLevel(level)
     local quests = {
-        {min = 1, max = 10, npc = "Bandit Quest Giver", enemy = "Bandit"},
-        {min = 11, max = 30, npc = "Monkey Quest Giver", enemy = "Monkey"},
-        {min = 31, max = 60, npc = "Pirate Quest Giver", enemy = "Pirate"}
+        {min = 1, max = 14, npc = "Bandit Quest Giver", enemy = "Bandit"},
+        {min = 15, max = 29, npc = "Gorilla Quest Giver", enemy = "Gorilla"},
+        {min = 30, max = 49, npc = "Pirate Quest Giver", enemy = "Pirate"},
+        {min = 50, max = 74, npc = "Brute Quest Giver", enemy = "Brute"},
+        {min = 75, max = 89, npc = "Desert Bandit Quest Giver", enemy = "Desert Bandit"},
+        {min = 90, max = 119, npc = "Snow Bandit Quest Giver", enemy = "Snow Bandit"},
+        {min = 120, max = 149, npc = "Yeti Quest Giver", enemy = "Yeti"},
+        {min = 150, max = 174, npc = "Sky Bandit Quest Giver", enemy = "Sky Bandit"},
+        {min = 175, max = 189, npc = "Dark Master Quest Giver", enemy = "Dark Master"},
+        {min = 190, max = 224, npc = "Prisoner Quest Giver", enemy = "Prisoner"},
+        {min = 225, max = 249, npc = "Colosseum Gladiator Quest Giver", enemy = "Gladiator"},
+        {min = 250, max = 274, npc = "Marine Captain Quest Giver", enemy = "Marine Captain"},
+        {min = 275, max = 299, npc = "Galley Captain Quest Giver", enemy = "Galley Captain"},
+        {min = 300, max = 324, npc = "Zombie Quest Giver", enemy = "Zombie"},
+        {min = 325, max = 374, npc = "Vampire Quest Giver", enemy = "Vampire"},
+        {min = 375, max = 399, npc = "Snowman Quest Giver", enemy = "Snowman"},
+        {min = 400, max = 449, npc = "Sky Guardian Quest Giver", enemy = "Sky Guardian"},
+        {min = 450, max = 474, npc = "Royal Squad Quest Giver", enemy = "Royal Squad"},
+        {min = 475, max = 524, npc = "Fishman Warrior Quest Giver", enemy = "Fishman Warrior"},
+        {min = 525, max = 549, npc = "Fishman Commando Quest Giver", enemy = "Fishman Commando"},
+        {min = 550, max = 624, npc = "God's Guard Quest Giver", enemy = "God's Guard"},
+        {min = 625, max = 674, npc = "Shanda Quest Giver", enemy = "Shanda"},
+        {min = 675, max = 699, npc = "Warden Quest Giver", enemy = "Warden"},
+        {min = 700, max = 724, npc = "Chief Warden Quest Giver", enemy = "Chief Warden"},
+        {min = 725, max = 774, npc = "Swan Pirate Quest Giver", enemy = "Swan Pirate"},
+        {min = 775, max = 799, npc = "Marine Rear Admiral Quest Giver", enemy = "Marine Rear Admiral"},
+        {min = 800, max = 849, npc = "Magma Ninja Quest Giver", enemy = "Magma Ninja"},
+        {min = 850, max = 875, npc = "Fishman Raider Quest Giver", enemy = "Fishman Raider"},
+        {min = 876, max = 925, npc = "Dragon Crew Warrior Quest Giver", enemy = "Dragon Crew Warrior"},
+        {min = 926, max = 999, npc = "Sea Soldier Quest Giver", enemy = "Sea Soldier"},
+        {min = 1000, max = 1199, npc = "Zombie Pirate Quest Giver", enemy = "Zombie Pirate"},
+        {min = 1200, max = 1399, npc = "Cursed Pirate Quest Giver", enemy = "Cursed Pirate"},
+        {min = 1400, max = 1599, npc = "Reborn Skeleton Quest Giver", enemy = "Reborn Skeleton"},
+        {min = 1600, max = 1799, npc = "Ship Deckhand Quest Giver", enemy = "Ship Deckhand"},
+        {min = 1800, max = 1999, npc = "Cake Guard Quest Giver", enemy = "Cake Guard"},
+        {min = 2000, max = 2249, npc = "Candy Rebel Quest Giver", enemy = "Candy Rebel"},
+        {min = 2250, max = 2499, npc = "Peanut Scout Quest Giver", enemy = "Peanut Scout"},
+        {min = 2500, max = 2600, npc = "Final Boss Quest Giver", enemy = "Final Boss"}
     }
     
     for _, quest in pairs(quests) do
@@ -73,37 +108,6 @@ function GetQuestForLevel(level)
     return nil
 end
 
-function StartQuest(quest)
-    local npc = FindNPC(quest.NPC)
-    if npc then
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = npc.Head.CFrame
-        wait(1)
-        fireproximityprompt(npc:FindFirstChild("ProximityPrompt")) 
-        wait(1)
-    end
-end
-
-function FindNPC(npcName)
-    for _, npc in pairs(game.Workspace.NPCs:GetChildren()) do
-        if npc.Name == npcName then
-            return npc
-        end
-    end
-    return nil
-end
-
-function FarmEnemies(enemyName)
-    for _, enemy in pairs(game.Workspace.Enemies:GetChildren()) do
-        if enemy.Name == enemyName and enemy:FindFirstChild("HumanoidRootPart") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = enemy.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
-            wait(0.5)
-            game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0))
-            wait(0.1)
-        end
-    end
-end
-
 OrionLib:Init()
-
 
 
