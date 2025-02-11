@@ -1,21 +1,21 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source", true))()
-
-local Window = OrionLib:MakeWindow({
-    Name = "My Custom Hub",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "MyHubConfig"
-})
-
-local FarmTab = Window:MakeTab({
+local FarmTab = OrionLib:MakeTab({
     Name = "Farm",
-    Icon = "rbxassetid://4483345998",
+    Icon = "rbxassetid://6031075938",
     PremiumOnly = false
 })
 
+local selectedAttackType = "Melee"
 local autofarmlevel = false
 local takequest = true
-local currentQuest = nil  
+
+FarmTab:AddDropdown({
+    Name = "Select Attack Type",
+    Default = "Melee",
+    Options = {"Melee", "Blox Fruit", "Sword"},
+    Callback = function(value)
+        selectedAttackType = value
+    end
+})
 
 FarmTab:AddToggle({
     Name = "Auto Farm Level",
@@ -36,6 +36,13 @@ FarmTab:AddToggle({
     end
 })
 
+FarmTab:AddButton({
+    Name = "Redeem All Codes",
+    Callback = function()
+        ActivateXPCodesAndRefund()
+    end
+})
+
 function StartAutoFarmLevel()
     while autofarmlevel do
         local player = game.Players.LocalPlayer
@@ -52,10 +59,35 @@ function StartAutoFarmLevel()
                 end
             end
             
-            FarmEnemies(quest.EnemyName)
+            FarmEnemies(quest.EnemyName, selectedAttackType)
         end
         wait(1)
     end
+end
+
+function FarmEnemies(enemyName, attackType)
+    if attackType == "Melee" then
+        -- Add Melee attack code here
+    elseif attackType == "Blox Fruit" then
+        -- Add Blox Fruit attack code here
+    elseif attackType == "Sword" then
+        -- Add Sword attack code here
+    end
+end
+
+function ActivateXPCodesAndRefund()
+    local codes = {
+        "EXP_5B", "EXP_4B", "Sub2Fer999", "Enyu_is_Pro",
+        "MagicBus", "JCWK", "Starcodeheo", "Bluxxy",
+        "fudd10_v2", "SUB2GAMERROBOT_EXP1", "SUB2NOOBMASTER123"
+    }
+    
+    for _, code in ipairs(codes) do
+        game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(code)
+        wait(0.5)
+    end
+
+    game:GetService("ReplicatedStorage").Remotes.RefundStats:InvokeServer()
 end
 
 function GetQuestForLevel(level)
@@ -107,23 +139,6 @@ function GetQuestForLevel(level)
     end
     return nil
 end
-
-OrionLib:Init()
-
-
-FarmTab:AddButton({
-    Name = "Redeem all codes",
-    Callback = function()
-        ActivateXPCodesAndRefund()
-    end
-})
-
-function ActivateXPCodesAndRefund()
-    local codes = {
-        "EXP_5B", "EXP_4B", "Sub2Fer999", "Enyu_is_Pro",
-        "MagicBus", "JCWK", "Starcodeheo", "Bluxxy",
-        "fudd10_v2", "SUB2GAMERROBOT_EXP1", "SUB2NOOBMASTER123"
-    }
     
     for _, code in ipairs(codes) do
         game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(code)
