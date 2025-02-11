@@ -1,12 +1,12 @@
-local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/sirius-menu/rayfield/main/source.lua"))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "My Script Hub",
+    Name = "Roblox Script Hub",
     LoadingTitle = "Loading...",
     LoadingSubtitle = "By Dev",
     ConfigurationSaving = {
-        Enabled = false,
-        FolderName = nil,
+        Enabled = true,
+        FolderName = "RobloxScripts",
         FileName = "ScriptHub"
     },
     Discord = {
@@ -18,13 +18,12 @@ local Window = Rayfield:CreateWindow({
 })
 
 local FarmTab = Window:CreateTab("Farm", 4483362458)
-
 local selectedAttackType = "Melee"
 local autofarmlevel = false
+local autoClickerEnabled = false
+local tweenSpeed = 250
 local takequest = true
 local currentQuest = nil
-local autoClickerEnabled = false
-local tweenSpeed = 250  -- Default tween speed set to 250
 
 FarmTab:CreateDropdown({
     Name = "Select Attack Type",
@@ -48,15 +47,6 @@ FarmTab:CreateToggle({
 })
 
 FarmTab:CreateToggle({
-    Name = "Take Quest",
-    CurrentValue = true,
-    Flag = "TakeQuest",
-    Callback = function(value)
-        takequest = value
-    end
-})
-
-FarmTab:CreateToggle({
     Name = "Auto Clicker",
     CurrentValue = false,
     Flag = "AutoClicker",
@@ -68,10 +58,12 @@ FarmTab:CreateToggle({
     end
 })
 
-FarmTab:CreateButton({
-    Name = "Redeem All Codes",
-    Callback = function()
-        ActivateXPCodesAndRefund()
+FarmTab:CreateToggle({
+    Name = "Take Quest",
+    CurrentValue = true,
+    Flag = "TakeQuest",
+    Callback = function(value)
+        takequest = value
     end
 })
 
@@ -83,6 +75,13 @@ FarmTab:CreateSlider({
     Increment = 1,
     Callback = function(value)
         tweenSpeed = value
+    end
+})
+
+FarmTab:CreateButton({
+    Name = "Redeem All Codes",
+    Callback = function()
+        ActivateXPCodesAndRefund()
     end
 })
 
@@ -115,7 +114,6 @@ end
 
 function StartAutoClicker()
     while autoClickerEnabled do
-        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Enemy.Position
         game:GetService("ReplicatedStorage").RemoteEvent:FireServer("Click")
         wait(0.1)
     end
