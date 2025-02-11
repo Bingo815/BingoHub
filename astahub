@@ -67,7 +67,6 @@ function StartAutoFarmLevel()
         local char = player.Character
         local level = player.Data.Level.Value
 
-        -- Stop auto farm when reaching max level
         if level >= 2600 then
             print("Max level reached: Stopping auto farm.")
             break
@@ -90,12 +89,27 @@ function StartAutoFarmLevel()
 end
 
 function FarmEnemies(enemyName, attackType)
+    local player = game.Players.LocalPlayer
+    local character = player.Character
+    if not character then return end
+    local humanoid = character:FindFirstChild("Humanoid")
+
     if attackType == "Melee" then
-        -- Melee attack code
+        local target = game.Workspace:FindFirstChild(enemyName)
+        if target then
+            humanoid:MoveTo(target.Position)
+            humanoid:Attack(target)
+        end
     elseif attackType == "Blox Fruit" then
-        -- Blox Fruit attack code
+        local target = game.Workspace:FindFirstChild(enemyName)
+        if target then
+            player:FindFirstChild("BloxFruitSkill"):UseSkill(target)
+        end
     elseif attackType == "Sword" then
-        -- Sword attack code
+        local target = game.Workspace:FindFirstChild(enemyName)
+        if target then
+            player:FindFirstChild("Sword"):Attack(target)
+        end
     end
 end
 
@@ -143,12 +157,12 @@ function GetQuestForLevel(level)
         {min = 725, max = 774, npc = "Swan Pirate Quest Giver", enemy = "Swan Pirate"},
         {min = 775, max = 799, npc = "Marine Rear Admiral Quest Giver", enemy = "Marine Rear Admiral"},
         {min = 800, max = 849, npc = "Magma Ninja Quest Giver", enemy = "Magma Ninja"},
-        -- Add more quests up to level 2600
-        {min = 850, max = 999, npc = "Sea King Quest Giver", enemy = "Sea King"},
-        {min = 1000, max = 1499, npc = "Ancient Guardian Quest Giver", enemy = "Ancient Guardian"},
-        {min = 1500, max = 1999, npc = "Legendary Warrior Quest Giver", enemy = "Legendary Warrior"},
-        {min = 2000, max = 2599, npc = "Dark Overlord Quest Giver", enemy = "Dark Overlord"},
-        {min = 2600, max = 2600, npc = "Final Boss Quest Giver", enemy = "Final Boss"}
+        {min = 850, max = 899, npc = "Sea King Quest Giver", enemy = "Sea King"},
+        {min = 900, max = 999, npc = "Ancient Guardian Quest Giver", enemy = "Ancient Guardian"},
+        {min = 1000, max = 1499, npc = "Legendary Warrior Quest Giver", enemy = "Legendary Warrior"},
+        {min = 1500, max = 1999, npc = "Dark Overlord Quest Giver", enemy = "Dark Overlord"},
+        {min = 2000, max = 2599, npc = "Final Boss Quest Giver", enemy = "Final Boss"},
+        {min = 2600, max = 2600, npc = "Max Level Quest Giver", enemy = "Max Level Boss"}
     }
 
     for _, quest in ipairs(quests) do
