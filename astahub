@@ -1,13 +1,13 @@
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "My Script Hub",
+    Name = "My Asta Hub",
     LoadingTitle = "Loading...",
     LoadingSubtitle = "By Dev",
     ConfigurationSaving = {
         Enabled = false,
         FolderName = nil,
-        FileName = "ScriptHub"
+        FileName = "AstaHub"
     },
     Discord = {
         Enabled = false,
