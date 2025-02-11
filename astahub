@@ -1,23 +1,23 @@
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/sirius-menu/rayfield/main/source.lua"))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "Roblox Script Hub",
+    Name = "Blox Fruits Auto Farm",
     LoadingTitle = "Loading...",
-    LoadingSubtitle = "By Dev",
+    LoadingSubtitle = "By YourName",
     ConfigurationSaving = {
         Enabled = true,
-        FolderName = "RobloxScripts",
-        FileName = "ScriptHub"
+        FolderName = "BloxFruits",
+        FileName = "AutoFarm"
     },
     Discord = {
         Enabled = false,
-        Invite = "yourdiscordlink",
+        Invite = "YourDiscordLink",
         RememberJoins = true
     },
     KeySystem = false
 })
 
-local FarmTab = Window:CreateTab("Farm", 4483362458)
+local FarmTab = Window:CreateTab("Auto Farm", 4483362458)
 local selectedAttackType = "Melee"
 local autofarmlevel = false
 local autoClickerEnabled = false
