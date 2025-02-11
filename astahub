@@ -1,10 +1,109 @@
-local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
-local Window = Library.CreateLib("Asta Hub", "DarkTheme")
-local Tab = Window:NewTab("Tab")
-local Section = Tab:NewSection("Farm")
-Section:NewButton("Auto farm level", "ButtonInfo", function()
-    print("Clicked")
-end)
+local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source", true))()
+
+local Window = OrionLib:MakeWindow({
+    Name = "My Custom Hub",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "MyHubConfig"
+})
+
+local FarmTab = Window:MakeTab({
+    Name = "Farm",
+    Icon = "rbxassetid://4483345998",
+    PremiumOnly = false
+})
+
+local autofarmlevel = false
+local takequest = true
+local currentQuest = nil  
+
+FarmTab:AddToggle({
+    Name = "Auto Farm Level",
+    Default = false,
+    Callback = function(value)
+        autofarmlevel = value
+        if autofarmlevel then
+            StartAutoFarmLevel()
+        end
+    end
+})
+
+FarmTab:AddToggle({
+    Name = "Take Quest",
+    Default = true,
+    Callback = function(value)
+        takequest = value
+    end
+})
+
+function StartAutoFarmLevel()
+    while autofarmlevel do
+        local player = game.Players.LocalPlayer
+        local char = player.Character
+        local level = player.Data.Level.Value
+        
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            local quest = GetQuestForLevel(level)
+            
+            if quest and (not currentQuest or currentQuest.NPC ~= quest.NPC) then
+                currentQuest = quest
+                if takequest then
+                    StartQuest(quest)
+                end
+            end
+            
+            FarmEnemies(quest.EnemyName)
+        end
+        wait(1)
+    end
+end
+
+function GetQuestForLevel(level)
+    local quests = {
+        {min = 1, max = 10, npc = "Bandit Quest Giver", enemy = "Bandit"},
+        {min = 11, max = 30, npc = "Monkey Quest Giver", enemy = "Monkey"},
+        {min = 31, max = 60, npc = "Pirate Quest Giver", enemy = "Pirate"}
+    }
+    
+    for _, quest in pairs(quests) do
+        if level >= quest.min and level <= quest.max then
+            return {NPC = quest.npc, EnemyName = quest.enemy}
+        end
+    end
+    return nil
+end
+
+function StartQuest(quest)
+    local npc = FindNPC(quest.NPC)
+    if npc then
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = npc.Head.CFrame
+        wait(1)
+        fireproximityprompt(npc:FindFirstChild("ProximityPrompt")) 
+        wait(1)
+    end
+end
+
+function FindNPC(npcName)
+    for _, npc in pairs(game.Workspace.NPCs:GetChildren()) do
+        if npc.Name == npcName then
+            return npc
+        end
+    end
+    return nil
+end
+
+function FarmEnemies(enemyName)
+    for _, enemy in pairs(game.Workspace.Enemies:GetChildren()) do
+        if enemy.Name == enemyName and enemy:FindFirstChild("HumanoidRootPart") and enemy:FindFirstChild("Humanoid") and enemy.Humanoid.Health > 0 then
+            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = enemy.HumanoidRootPart.CFrame * CFrame.new(0, 5, 0)
+            wait(0.5)
+            game:GetService("VirtualUser"):Button1Down(Vector2.new(0,0))
+            wait(0.1)
+        end
+    end
+end
+
+OrionLib:Init()
 
 
 
