@@ -1,13 +1,13 @@
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 
 local Window = Rayfield:CreateWindow({
-    Name = "My Asta Hub",
+    Name = "My Script Hub",
     LoadingTitle = "Loading...",
     LoadingSubtitle = "By Dev",
     ConfigurationSaving = {
         Enabled = false,
         FolderName = nil,
-        FileName = "AstaHub"
+        FileName = "ScriptHub"
     },
     Discord = {
         Enabled = false,
@@ -23,6 +23,8 @@ local selectedAttackType = "Melee"
 local autofarmlevel = false
 local takequest = true
 local currentQuest = nil
+local autoClickerEnabled = false
+local tweenSpeed = 250  -- Default tween speed set to 250
 
 FarmTab:CreateDropdown({
     Name = "Select Attack Type",
@@ -54,10 +56,33 @@ FarmTab:CreateToggle({
     end
 })
 
+FarmTab:CreateToggle({
+    Name = "Auto Clicker",
+    CurrentValue = false,
+    Flag = "AutoClicker",
+    Callback = function(value)
+        autoClickerEnabled = value
+        if autoClickerEnabled then
+            StartAutoClicker()
+        end
+    end
+})
+
 FarmTab:CreateButton({
     Name = "Redeem All Codes",
     Callback = function()
         ActivateXPCodesAndRefund()
+    end
+})
+
+FarmTab:CreateSlider({
+    Name = "Set Tween Speed",
+    Min = 10,
+    Max = 300,
+    Default = tweenSpeed,
+    Increment = 1,
+    Callback = function(value)
+        tweenSpeed = value
     end
 })
 
@@ -88,27 +113,42 @@ function StartAutoFarmLevel()
     end
 end
 
+function StartAutoClicker()
+    while autoClickerEnabled do
+        game:GetService("Players").LocalPlayer.Character.HumanoidRootPart.CFrame = game:GetService("Workspace").Enemy.Position
+        game:GetService("ReplicatedStorage").RemoteEvent:FireServer("Click")
+        wait(0.1)
+    end
+end
+
 function FarmEnemies(enemyName, attackType)
     local player = game.Players.LocalPlayer
     local character = player.Character
     if not character then return end
-    local humanoid = character:FindFirstChild("Humanoid")
 
-    if attackType == "Melee" then
-        local target = game.Workspace:FindFirstChild(enemyName)
-        if target then
-            humanoid:MoveTo(target.Position)
-            humanoid:Attack(target)
-        end
-    elseif attackType == "Blox Fruit" then
-        local target = game.Workspace:FindFirstChild(enemyName)
-        if target then
-            player:FindFirstChild("BloxFruitSkill"):UseSkill(target)
-        end
-    elseif attackType == "Sword" then
-        local target = game.Workspace:FindFirstChild(enemyName)
-        if target then
-            player:FindFirstChild("Sword"):Attack(target)
+    local humanoid = character:FindFirstChild("Humanoid")
+    if not humanoid then return end
+
+    local target = game.Workspace:FindFirstChild(enemyName)
+    if target then
+        local TweenService = game:GetService("TweenService")
+        local targetPosition = target.Position
+        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+        
+        if humanoidRootPart then
+            local goal = {Position = targetPosition}
+            local tweenInfo = TweenInfo.new(tweenSpeed / 100, Enum.EasingStyle.Linear, Enum.EasingDirection.Out, -1, false, 0)
+            local tween = TweenService:Create(humanoidRootPart, tweenInfo, goal)
+            tween:Play()
+            tween.Completed:Wait()
+            
+            if attackType == "Melee" then
+                humanoidRootPart:FindFirstChild("MeleeAttack"):FireServer(target)
+            elseif attackType == "Blox Fruit" then
+                humanoidRootPart:FindFirstChild("BloxFruitSkill"):UseSkill(target)
+            elseif attackType == "Sword" then
+                humanoidRootPart:FindFirstChild("Sword"):Attack(target)
+            end
         end
     end
 end
@@ -133,43 +173,28 @@ function GetQuestForLevel(level)
         {min = 1, max = 14, npc = "Bandit Quest Giver", enemy = "Bandit"},
         {min = 15, max = 29, npc = "Gorilla Quest Giver", enemy = "Gorilla"},
         {min = 30, max = 49, npc = "Pirate Quest Giver", enemy = "Pirate"},
-        {min = 50, max = 74, npc = "Brute Quest Giver", enemy = "Brute"},
-        {min = 75, max = 89, npc = "Desert Bandit Quest Giver", enemy = "Desert Bandit"},
-        {min = 90, max = 119, npc = "Snow Bandit Quest Giver", enemy = "Snow Bandit"},
-        {min = 120, max = 149, npc = "Yeti Quest Giver", enemy = "Yeti"},
-        {min = 150, max = 174, npc = "Sky Bandit Quest Giver", enemy = "Sky Bandit"},
-        {min = 175, max = 189, npc = "Dark Master Quest Giver", enemy = "Dark Master"},
-        {min = 190, max = 224, npc = "Prisoner Quest Giver", enemy = "Prisoner"},
-        {min = 225, max = 249, npc = "Colosseum Gladiator Quest Giver", enemy = "Gladiator"},
-        {min = 250, max = 274, npc = "Marine Captain Quest Giver", enemy = "Marine Captain"},
-        {min = 275, max = 299, npc = "Galley Captain Quest Giver", enemy = "Galley Captain"},
-        {min = 300, max = 324, npc = "Zombie Quest Giver", enemy = "Zombie"},
-        {min = 325, max = 374, npc = "Vampire Quest Giver", enemy = "Vampire"},
-        {min = 375, max = 399, npc = "Snowman Quest Giver", enemy = "Snowman"},
-        {min = 400, max = 449, npc = "Sky Guardian Quest Giver", enemy = "Sky Guardian"},
-        {min = 450, max = 474, npc = "Royal Squad Quest Giver", enemy = "Royal Squad"},
-        {min = 475, max = 524, npc = "Fishman Warrior Quest Giver", enemy = "Fishman Warrior"},
-        {min = 525, max = 549, npc = "Fishman Commando Quest Giver", enemy = "Fishman Commando"},
-        {min = 550, max = 624, npc = "God's Guard Quest Giver", enemy = "God's Guard"},
-        {min = 625, max = 674, npc = "Shanda Quest Giver", enemy = "Shanda"},
-        {min = 675, max = 699, npc = "Warden Quest Giver", enemy = "Warden"},
-        {min = 700, max = 724, npc = "Chief Warden Quest Giver", enemy = "Chief Warden"},
-        {min = 725, max = 774, npc = "Swan Pirate Quest Giver", enemy = "Swan Pirate"},
-        {min = 775, max = 799, npc = "Marine Rear Admiral Quest Giver", enemy = "Marine Rear Admiral"},
-        {min = 800, max = 849, npc = "Magma Ninja Quest Giver", enemy = "Magma Ninja"},
-        {min = 850, max = 899, npc = "Sea King Quest Giver", enemy = "Sea King"},
-        {min = 900, max = 999, npc = "Ancient Guardian Quest Giver", enemy = "Ancient Guardian"},
-        {min = 1000, max = 1499, npc = "Legendary Warrior Quest Giver", enemy = "Legendary Warrior"},
-        {min = 1500, max = 1999, npc = "Dark Overlord Quest Giver", enemy = "Dark Overlord"},
-        {min = 2000, max = 2599, npc = "Final Boss Quest Giver", enemy = "Final Boss"},
-        {min = 2600, max = 2600, npc = "Max Level Quest Giver", enemy = "Max Level Boss"}
+        {min = 50, max = 74, npc = "Bounty Hunter Quest Giver", enemy = "Bounty Hunter"},
+        {min = 75, max = 99, npc = "Arctic Warrior Quest Giver", enemy = "Arctic Warrior"},
+        {min = 100, max = 149, npc = "Rebel Quest Giver", enemy = "Rebel"},
+        {min = 150, max = 199, npc = "Desert Bandit Quest Giver", enemy = "Desert Bandit"},
+        {min = 200, max = 299, npc = "Sky Bandit Quest Giver", enemy = "Sky Bandit"},
+        {min = 300, max = 499, npc = "Jungle Warrior Quest Giver", enemy = "Jungle Warrior"},
+        {min = 500, max = 699, npc = "Magma Pirate Quest Giver", enemy = "Magma Pirate"},
+        {min = 700, max = 999, npc = "Shark Raider Quest Giver", enemy = "Shark Raider"},
+        {min = 1000, max = 1499, npc = "Ice King Quest Giver", enemy = "Ice King"},
+        {min = 1500, max = 1999, npc = "Vampire Quest Giver", enemy = "Vampire"},
+        {min = 2000, max = 2599, npc = "Dragon Boss Quest Giver", enemy = "Dragon Boss"},
+        {min = 2600, max = 2600, npc = "Max Level NPC", enemy = "Max Level Enemy"}
     }
 
     for _, quest in ipairs(quests) do
         if level >= quest.min and level <= quest.max then
-            return {NPC = quest.npc, EnemyName = quest.enemy}
+            return quest
         end
     end
-
     return nil
+end
+
+function StartQuest(quest)
+    print("Starting quest:", quest.npc)
 end
