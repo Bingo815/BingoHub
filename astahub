@@ -1,5 +1,11 @@
-local OrionLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/shlexware/Orion/main/source", true))()
-local FarmTab = OrionLib:MakeTab({
+local Window = OrionLib:MakeWindow({
+    Name = "My Script Hub",
+    HidePremium = false,
+    SaveConfig = true,
+    ConfigFolder = "MyScriptHubConfig"
+})
+
+local FarmTab = Window:MakeTab({
     Name = "Farm",
     Icon = "rbxassetid://6031075938",
     PremiumOnly = false
@@ -43,6 +49,8 @@ FarmTab:AddButton({
         ActivateXPCodesAndRefund()
     end
 })
+
+OrionLib:Init()
 
 function StartAutoFarmLevel()
     while autofarmlevel do
@@ -139,12 +147,4 @@ function GetQuestForLevel(level)
         end
     end
     return nil
-end
-    
-    for _, code in ipairs(codes) do
-        game:GetService("ReplicatedStorage").Remotes.Redeem:InvokeServer(code)
-        wait(0.5)
-    end
-
-    game:GetService("ReplicatedStorage").Remotes.RefundStats:InvokeServer()
 end
