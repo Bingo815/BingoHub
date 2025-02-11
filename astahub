@@ -112,7 +112,7 @@ OrionLib:Init()
 
 
 FarmTab:AddButton({
-    Name = "Activate XP Codes & Stats Refund",
+    Name = "Redeem all codes",
     Callback = function()
         ActivateXPCodesAndRefund()
     end
